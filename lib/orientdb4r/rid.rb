@@ -15,12 +15,21 @@ module Orientdb4r
     def initialize(rid)
       raise ArgumentError, 'RID cannot be blank' if blank? rid
       raise ArgumentError, 'RID is not String' unless rid.is_a? String
-      raise ArgumentError, "bad RID format, rid=#{rid}" unless rid =~ RID_REGEXP_PATTERN
+      rid = ( rid =~ RID_REGEXP_PATTERN ) ?  rid: extract_value(rid)
 
       rid = rid[1..-1] if rid.start_with? '#'
       ids = rid.split ':'
       self.cluster_id = ids[0].to_i
       self.document_id = ids[1].to_i
+    end
+
+    def extract_value(rid)
+      begin
+        extracted = JSON::parse(rid)['@rid']
+        return extracted if extracted =~ RID_REGEXP_PATTERN
+      rescue
+      end
+      raise ArgumentError, "bad RID format, rid=#{rid}"
     end
 
     ###

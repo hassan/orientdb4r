@@ -16,12 +16,23 @@ class TestDdo < Test::Unit::TestCase
 
   def setup
     @client.connect :database => DB, :user => 'admin', :password => 'admin'
+    begin
+      #@client.drop_class(CLASS, :mode => :strict)
+      @client.drop_class(CLASS, :mode => :strict)
+    rescue
+      puts "---------------- foobar"
+    end
   end
 
   def teardown
     # remove the testing class after each test
-    @client.drop_class(CLASS, :mode => :strict)
-    @client.disconnect
+    begin
+      @client.drop_class(CLASS, :mode => :strict)
+    rescue
+      puts "---------------- oh man...."
+    ensure
+      @client.disconnect
+    end
   end
 
 
@@ -77,6 +88,10 @@ class TestDdo < Test::Unit::TestCase
 
     # create ABSTRACT
     ab_class = 'testingAbstr'
+    begin
+      @client.drop_class(ab_class, :mode => :strict)
+    rescue
+    end
     assert_nothing_thrown do @client.create_class(ab_class, :abstract => true); end
     clazz = @client.get_class ab_class
     assert clazz.abstract?

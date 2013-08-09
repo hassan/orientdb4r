@@ -234,7 +234,7 @@ module Orientdb4r
       opt_pattern = { :mode => :nil }
       verify_options(options, opt_pattern)
       if :strict == options[:mode]
-        response = call_server(:method => :get, :uri => "connect/#{@database}") # TODO there cannot be REST (in this client class)
+        response = call_server(:method => :get, :uri => "database/#{@database}") # TODO there cannot be REST (in this client class)
         connect_info = process_response response
         children = connect_info['classes'].select { |i| i['superClass'] == name }
         unless children.empty?

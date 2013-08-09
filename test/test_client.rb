@@ -9,7 +9,6 @@ class TestClient < Test::Unit::TestCase
 
   PROXY_URL = 'http://bad.domain.com'
 
-
   ###
   # Test inintialization of single node.
   def test_one_node_initialization
@@ -44,11 +43,6 @@ class TestClient < Test::Unit::TestCase
     client = Orientdb4r.client :instance => :new
     assert_equal :restclient, client.connection_library
     assert_instance_of Orientdb4r::RestClientNode, client.nodes[0]
-
-    # excon
-    client = Orientdb4r.client :connection_library => :excon, :instance => :new
-    assert_equal :excon, client.connection_library
-    assert_instance_of Orientdb4r::ExconNode, client.nodes[0]
   end
 
   ###
@@ -67,20 +61,6 @@ class TestClient < Test::Unit::TestCase
       client.connect :database => 'temp', :user => 'admin', :password => 'admin'
     end
     RestClient.proxy = nil # restore no setting
-
-    # no proxy - excon
-    client = Orientdb4r.client :connection_library => :excon, :instance => :new
-    assert_nil client.proxy
-    assert_nil client.nodes[0].proxy
-
-    # proxy - restclient
-    client = Orientdb4r.client :connection_library => :excon, :proxy => PROXY_URL, :instance => :new
-    assert_equal PROXY_URL, client.proxy
-    assert_equal PROXY_URL, client.nodes[0].proxy
-    assert_raise Orientdb4r::ConnectionError do
-      client.connect :database => 'temp', :user => 'admin', :password => 'admin'
-    end
   end
-
 
 end

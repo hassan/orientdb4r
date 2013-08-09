@@ -16,7 +16,6 @@ module Orientdb4r
         :host => 'localhost', :port => 2480, :ssl => false,
         :nodes => :optional,
         :connection_library => :restclient,
-#        :connection_library => :excon,
         :load_balancing => :sequence,
         :proxy => :optional,
         :user_agent => :optional,
@@ -88,7 +87,8 @@ module Orientdb4r
 
       @nodes.each { |node| node.cleanup } # destroy all used session <= problem in 1.3.0-SNAPSHOT
       begin
-        response = call_server(:method => :get, :uri => "connect/#{@database}")
+        #response = call_server(:method => :get, :uri => "connect/#{@database}")
+        response = call_server(:method => :get, :uri => "database/#{@database}")
       rescue
         @connected = false
         @server_version = nil
@@ -98,6 +98,7 @@ module Orientdb4r
         @nodes.each { |node| node.cleanup }
         raise ConnectionError
       end
+      #response = call_server(:method => :get, :uri => "database/#{@database}" )
       rslt = process_response response
       decorate_classes_with_model(rslt['classes']) unless rslt['classes'].nil? # no metadata in connect: https://groups.google.com/forum/?fromgroups=#!topic/orient-database/R0VoOfIyDng
 

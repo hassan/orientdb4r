@@ -50,7 +50,6 @@ class TestDocumentCrud < Test::Unit::TestCase
     end
     rid = @client.create_document({ '@class' => 'unknown_class', 'a' => 11, 'b' => 'text1' })
     doc = @client.get_document rid
-    assert_nil doc.doc_class
     assert_equal 11, doc['a']
     assert_equal 'text1', doc['b']
     # or missing class
